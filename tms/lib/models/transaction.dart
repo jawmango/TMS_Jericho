@@ -32,4 +32,14 @@ class Transaction {
       _ => throw const FormatException('Failed to load transactions.'),
     };
   }
+
+  Map<String, dynamic> toJson(){
+    return{
+      'Transaction Date': transactionDate,
+      'Account Number': accountNumber,
+      'Account Holder Name': accountName,
+      'Amount': amount,
+      'Status': status,
+    };
+  }
 }

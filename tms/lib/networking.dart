@@ -18,3 +18,24 @@ Future<List<Transaction>> fetchTransaction() async {
     throw Exception('Failed to load data: ${response.statusCode}');
   }
 }
+
+Future<void> addTransaction(Transaction transaction) async{
+  final url = Uri.parse('http://127.0.0.1:5000/transactions');
+
+  final response = await http.post(
+    url,
+    headers: {
+      'Content-Type':'application/json',
+      'Accept': 'application/json',
+    },
+    body: json.encode(transaction.toJson()),
+  );
+
+  if (response.statusCode==201){
+    print('Transaction created');
+  }
+  else{
+    print('Failed to create');
+  }
+
+}
