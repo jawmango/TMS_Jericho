@@ -1,30 +1,41 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:tms/main.dart';
+import 'package:tms/models/transaction.dart';
+import 'package:tms/utils/helpers.dart';
+import 'package:flutter/material.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('Transaction Model Tests', () {
+    test('should create transaction with correct values', () {
+      Random random = Random();
+      List<String> statusList = ["Pending", "Settled", "Failed"];
+      final transaction = Transaction(
+        transactionDate: '2025-03-01',
+        accountNumber: '7289-3445-1121',
+        accountName: 'Maria Johnson',
+        amount: 150.00,
+        status: statusList[random.nextInt(3)],
+      );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      expect(transaction.transactionDate, equals('2025-03-01'));
+      expect(transaction.accountNumber, equals('7289-3445-1121'));
+      expect(transaction.accountName, equals('Maria Johnson'));
+      expect(transaction.amount, equals(150.00));
+      expect(statusList.contains(transaction.status), isTrue);
+    });
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  //status color assignment
+  group('Status Color Test', () {
+    test('should return yellow for pending', () {
+      expect(AppHelpers.statusColor('pending'), Colors.yellow);
+    });
+    test('should return green for settled', () {
+      expect(AppHelpers.statusColor('settled'), Colors.green);
+    });
+    test('should return red for failed', () {
+      expect(AppHelpers.statusColor('failed'), Colors.red);
+    });
   });
 }

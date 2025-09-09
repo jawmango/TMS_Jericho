@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tms/models/transaction.dart';
-import 'package:tms/networking.dart';
+import 'package:tms/services/networking.dart';
+import 'package:tms/utils/styles.dart';
 import 'package:tms/widgets/transaction_form.dart';
 import 'package:tms/widgets/transaction_table.dart';
 
@@ -26,41 +26,30 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.teal,
-        title: Text(
-          'Transaction Management System',
-          style: TextStyle(color: Colors.white),
-        ),
+      backgroundColor: AppStyles.primaryColor.shade50,
+      //add Transaction Button
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final result = await showDialog<bool>(
+            context: context,
+            builder: (context) => TransactionForm(),
+          );
+
+          if (result == true) {
+            setState(() {
+              futureTransaction = fetchTransaction();
+            });
+          }
+        },
+        backgroundColor: AppStyles.secondaryColor.shade600,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add),
+        label: const Text('Add Transaction'),
+        elevation: 8,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            //transaction table
-            TransactionTable(futureTransaction: futureTransaction),
-
-            //button for adding a transaction
-            TextButton(
-              onPressed: () async {
-                final result = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => TransactionForm(),
-                );
-
-                if (result == true) {
-                  setState(() {
-                    futureTransaction = fetchTransaction();
-                  });
-                }
-              },
-              style: TextButton.styleFrom(backgroundColor: Colors.grey[200]),
-              child: Text(
-                'Add Transaction',
-                style: TextStyle(color: Colors.teal),
-              ),
-            ),
-          ],
-        ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(50, 50, 50, 105),
+        child: TransactionTable(futureTransaction: futureTransaction),
       ),
     );
   }

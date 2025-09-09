@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tms/models/transaction.dart';
 
+//fetch the transaction data from API
 Future<List<Transaction>> fetchTransaction() async {
   final response = await http.get(
     Uri.parse('http://127.0.0.1:5000/transactions'),
@@ -15,10 +16,11 @@ Future<List<Transaction>> fetchTransaction() async {
 
     return jsonList.map((json) => Transaction.fromJson(json)).toList();
   } else {
-    throw Exception('Failed to load data: ${response.statusCode}');
+    throw Exception('Failed to load transaction data: ${response.statusCode}');
   }
 }
 
+//POST request on api for adding transaction
 Future<void> addTransaction(Transaction transaction) async{
   final url = Uri.parse('http://127.0.0.1:5000/transactions');
 
@@ -32,10 +34,10 @@ Future<void> addTransaction(Transaction transaction) async{
   );
 
   if (response.statusCode==201){
-    print('Transaction created');
+    null;
   }
   else{
-    print('Failed to create');
+    throw Exception('Failed to create new transaction data: ${response.statusCode}');
   }
 
 }

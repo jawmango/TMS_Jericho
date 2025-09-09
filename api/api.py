@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-#creates csv file if not found
+#makes sure CSV storage exists
 if not os.path.exists('transactions.csv'):
     with open('transactions.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
@@ -19,7 +19,7 @@ transaction_args.add_argument('Transaction Date', type=str, required=True, help=
 transaction_args.add_argument('Account Number', type=str, required=True, help="Account number cannot be blank")
 transaction_args.add_argument('Account Holder Name', type=str, required=True, help="Account Holder Name cannot be blank")
 transaction_args.add_argument('Amount', type=float, required=True, help="Amount cannot be blank")
-transaction_args.add_argument('Status', type=str, required=True, help="Status cannot be blank")
+transaction_args.add_argument('Status', type=str, required=True, choices=['Pending', 'Settled', 'Failed'], help="Status cannot be blank")
 
 #expected format for GET request
 transactionFields = {
@@ -34,47 +34,58 @@ class Transactions(Resource):
     #get request for all transactions
     @marshal_with(transactionFields)
     def get(self):
-        transactions = []
-        with open('transactions.csv', mode='r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                transactions.append({
-                    'Transaction Date': row['Transaction Date'],
-                    'Account Number': row['Account Number'],
-                    'Account Holder Name': row['Account Holder Name'],
-                    'Amount': float(row['Amount']),
-                    'Status': row['Status'],
-                })
-        return transactions, 200
+        try:
+            transactions = []
+            #reads from csv
+            with open('transactions.csv', mode='r') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    transactions.append({
+                        'Transaction Date': row['Transaction Date'],
+                        'Account Number': row['Account Number'],
+                        'Account Holder Name': row['Account Holder Name'],
+                        'Amount': float(row['Amount']),
+                        'Status': row['Status'],
+                    })
+            return transactions, 200
+        except Exception as e:
+            return {'error': 'Failed to retrieve transactions'}, 500
+        
     
     #post request to add a row in csv file
-    @marshal_with(transactionFields)
     def post(self):
-        args = transaction_args.parse_args()
-
         try:
-            date = datetime.datetime.strptime(args['Transaction Date'], '%Y-%m-%d')
-        except ValueError:
-            return 400
+            #validates values against defined types
+            args = transaction_args.parse_args()
+            
+            #validates date format
+            try:
+                date = datetime.datetime.strptime(args['Transaction Date'], '%Y-%m-%d')
+            except ValueError as e:
+                return {'error': 'Invalid date format.'}, 400
+            
+            transaction = {
+                'Transaction Date': date.strftime('%Y-%m-%d'),
+                'Account Number': args['Account Number'],
+                'Account Holder Name': args['Account Holder Name'],
+                'Amount': args['Amount'],
+                'Status': args['Status']
+            }
+
+            #writes to csv storage
+            with open('transactions.csv', mode='a',newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([
+                    transaction['Transaction Date'],
+                    transaction['Account Number'],
+                    transaction['Account Holder Name'],
+                    transaction['Amount'],
+                    transaction['Status']
+                ])
+                return transaction, 201
         
-        transaction = {
-            'Transaction Date': date.strftime('%Y-%m-%d'),
-            'Account Number': args['Account Number'],
-            'Account Holder Name': args['Account Holder Name'],
-            'Amount': args['Amount'],
-            'Status': args['Status']
-        }
-    
-        with open('transactions.csv', mode='a',newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([
-                transaction['Transaction Date'],
-                transaction['Account Number'],
-                transaction['Account Holder Name'],
-                transaction['Amount'],
-                transaction['Status']
-            ])
-            return transaction, 201
+        except Exception as e:
+            return {'error': 'Failed to add transaction'}, 500
 
 #assigned url 
 api.add_resource(Transactions, '/transactions')
