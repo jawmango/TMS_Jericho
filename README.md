@@ -4,19 +4,19 @@ A simple transaction management system of a Flask RESTful API for data operation
 # Table of Contents
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Configuration](#configuration)
 - [Running the Application](#running-the-application)
 - [API Docs](#api-docs)
+- [Configuration](#configuration)
 - [Testing](#testing)
 
 ## Prerequisites
 The following software should be installed before setting up this project:
 
 ### Backend (Flask API):
-- Python 3.8 or higher - [Download Python](https://www.python.org/downloads/)
+- Python 3.8 or higher - [Download Python](https://www.python.org/downloads/) (For Windows, makes sure to add python.exe to path)
 
 ### Frontend (Flutter APP):
-- Flutter SDK 3.10 or higher - Install Flutter for [Windows](https://docs.flutter.dev/get-started/install/windows/web), [Mac](https://docs.flutter.dev/get-started/install/macos/web), or [Linux](https://docs.flutter.dev/get-started/install/linux/web)
+- Flutter SDK 3.10 or higher - Install Flutter for [Windows](https://docs.flutter.dev/get-started/install/windows/web), [Mac](https://docs.flutter.dev/get-started/install/macos/web), or [Linux](https://docs.flutter.dev/get-started/install/linux/web) (For Windows, makes sure to follow Flutter docs and update your Windows PATH variable)
 - Google Chrome (For testing Flutter Application)
 
 ### Tools:
@@ -75,20 +75,6 @@ flutter pub get
 ```
 flutter doctor
 ```
-## Configuration
-### 1. Environment Variables (Optional)
-Create a `.env` file in the `api` directory
-
-```
-FLASK_ENV=development
-FLASK_DEBUG=True
-API_HOST=0.0.0.0
-API_PORT=5000
-CSV_FILE=transactions.csv
-```
-### 2. CORS Configuration
-The Flask app is configured to allow cross-origin requests from the Flutter app. No additional configuration needed.
-
 ## Running the Application
 ### 1. Start the Backend Server
 #### Step 1: Navigate to Backend Directory ('api' Folder)
@@ -198,6 +184,20 @@ Content-Type: application/json
 - 400 - Validation Error
 - 404 - Endpoint not Found
 - 500 - Internal server error
+
+## Configuration
+### 1. Environment Variables (Optional)
+Create a `.env` file in the `api` directory
+
+```
+FLASK_ENV=development
+FLASK_DEBUG=True
+API_HOST=0.0.0.0
+API_PORT=5000
+CSV_FILE=transactions.csv
+```
+### 2. CORS Configuration
+The Flask app is configured to allow cross-origin requests from the Flutter app. No additional configuration needed.
 
 ### Testing
 #### API Testing
