@@ -8,6 +8,7 @@ A simple transaction management system of a Flask RESTful API for data operation
 - [API Docs](#api-docs)
 - [Configuration](#configuration)
 - [Testing](#testing)
+- [Directory Structure](#directory-structure)
 
 ## Prerequisites
 The following software should be installed before setting up this project:
@@ -199,6 +200,18 @@ CSV_FILE=transactions.csv
 ### 2. CORS Configuration
 The Flask app is configured to allow cross-origin requests from the Flutter app. No additional configuration needed.
 
+### 3. Flutter Configuration File - pubspec.yaml
+The pubspec.yaml file is used to configure the following:
+- Project Information: Name, description, and version
+- Dependencies: External packages and libraries
+- Assets: Images, fonts, and other resources
+- Environment constraints: Minimum Dart SDK version required
+
+Run the following command to fetch and update your declared dependencies:
+```
+flutter pub get
+```
+
 ### Testing
 #### API Testing
 #### Testing with Postman
@@ -280,8 +293,41 @@ flutter run -d chrome
 4. Try invalid inputs to test form validation
 5. After successful submission, check if table updates
 
-## Author
+## Directory Structure
+```
+├── api                                 # Flask API
+│   ├── api.py                          # main Flask applicaiton
+│   ├── requirements.txt                # Python dependencies
+│   └── transactions.csv                # data storage
+└── tms                                 # Flutter web application
+    ├── analysis_options.yaml
+    ├── build
+    ├── lib
+    │   ├── main.dart                   # application entry point
+    │   ├── models
+    │   │   └── transaction.dart        # transaction data model    
+    │   ├── screens
+    │   │   └── home.dart               # main screen
+    │   ├── services
+    │   │   └── networking.dart         # API integration functions
+    │   ├── utils
+    │   │   ├── helpers.dart            # utility functions
+    │   │   └── styles.dart             # app styling
+    │   └── widgets
+    │       ├── transaction_form.dart   # add transaction forms widget/component
+    │       └── transaction_table.dart  # transactions table widget/component
+    ├── pubspec.lock
+    ├── pubspec.yaml                    # configuration file for dependencies, assets, and other project settings
+    ├── README.md
+    ├── test
+    │   └── widget_test.dart            # unit testing
+    ├── tms.iml
+    ├── web
+    └── windows
+```
 
+
+## Author
 **[Jericho James Obiedo](https://github.com/jawmango)**  
 Creator and maintainer of this project.
 
